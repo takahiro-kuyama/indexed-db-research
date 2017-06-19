@@ -1,0 +1,17 @@
+{
+  "name": "nodetest",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "budo --live --open",
+    "obj2gltf": ""
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "budo": "^10.0.3",
+    "obj2gltf": "^1.1.1"
+  }
+}

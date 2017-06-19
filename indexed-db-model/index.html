@@ -1,0 +1,115 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <title>Show 3DModel On A-Frame with IndexedDB</title>
+    <meta name="description" content="Hello, WebVR! - A-Frame">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <script src="https://aframe.io/releases/0.5.0/aframe.min.js"></script>
+</head>
+<body>
+    <div><a href="./deleteIndexedDB.html">Delete indexed DB</a></div>
+    <div>3Dmodel by <a href="https://sketchfab.com/models/ad10226b4f7a451ea23920a556c72a90">Horniman Museum - Dodo Model</a></div>
+    <a-scene>
+        <a-assets>
+        </a-assets>
+
+        <a-entity position="0 1.2 -2" scale="0.1 0.1 0.1"></a-entity>
+    </a-scene>
+    <script type="text/javascript">
+        var version = 1;
+        var dodo_asset = document.createElement("a-asset-item");
+        dodo_asset.id = "dodo";
+
+        var model_url = "./gltf/dodo.gltf";
+        var is_db_updated = false;
+
+        function insertDOMs() {
+            var assets = document.querySelector('a-assets');
+            assets.appendChild(dodo_asset);
+
+            //var dodo_model = document.querySelector("a-entity");
+            var dodo_model = document.createElement("a-entity");
+            dodo_model.setAttribute('gltf-model', '#dodo');
+            dodo_model.setAttribute('position', '0 1.2 -2');
+            dodo_model.setAttribute('scale', '0.1 0.1 0.1');
+            document.querySelector("a-scene").appendChild(dodo_model);
+        }
+
+        window.onload = function () {
+            //1.indexedDBを開く
+            var idbReq = indexedDB.open("3dmodel", version);
+
+            //2.DBの新規作成時、またはバージョン変更時に実行するコード
+            idbReq.onupgradeneeded = function (event) {
+                is_db_updated = true;
+                var db = event.target.result;
+
+                //過去にDBを作成したことがなければ作成
+                if (event.oldVersion < 1 || (event.oldVersion & 0x7fffffffffffffff) < 1) {
+                    console.log("create database");
+                    event.target.result.createObjectStore("model", { keyPath: "name" });
+                }
+
+                //onupdateneededで呼ばれたtransactionが終了してから処理を行う（既存のtransactionが新規のtransactionをブロックし合う場合がある）
+                event.target.transaction.oncomplete = function () {
+                    var xhr = new XMLHttpRequest();
+                    xhr.open('GET', model_url, true);
+                    xhr.responseType = 'arraybuffer';
+
+                    xhr.onload = function (e) {
+                        try {
+                            var transaction = db.transaction("model", "readwrite");
+                            modelStore = transaction.objectStore("model");
+                            var arraybuffer = e.target.response;
+                            //データの追加
+                            modelStore.put({ name: "dodo", model: arraybuffer });
+
+                            var blob = new Blob([arraybuffer], { type: 'application/octet-stream' });
+                            var URL = window.URL || window.webkitURL;
+                            var blob_url = URL.createObjectURL(blob)
+                            dodo_asset.setAttribute('src', blob_url);
+                            console.log("complete model update");
+                            insertDOMs();
+                        } catch (e) {
+                            console.log(e.message);
+                        }
+                    }
+                    xhr.send();
+                }
+            }
+
+            idbReq.onsuccess = function (event) {
+                if (!is_db_updated) {
+                    var db = event.target.result;
+                    //"model"オブジェクトストアを読みreadonly権限付きで使用することを宣言
+                    var transaction = db.transaction("model", "readonly");
+                    //オブジェクトストアの取り出し
+                    var modelStore = transaction.objectStore("model");
+                    //オブジェクトストアへ取り出しリクエスト
+                    var getReq = modelStore.get("dodo");
+
+                    //modelオブジェクトストアからのデータの取り出し
+                    getReq.onsuccess = function (event) {
+                        try {
+                            var arraybuffer = event.target.result.model;
+
+                            var blob = new Blob([arraybuffer], { type: 'application/octet-stream' });
+                            var URL = window.URL || window.webkitURL;
+                            var blob_url = URL.createObjectURL(blob)
+                            dodo_asset.setAttribute('src', blob_url);
+                            console.log("opened database");
+                        } catch (e) {
+                            console.log(e.message);
+                        }
+                        insertDOMs();
+                    }
+                    getReq.onerror = function (event) {
+                        console.log("db is opened, but failed data load")
+                    }
+                }
+            }
+        }
+    </script>
+</body>
+</html>
