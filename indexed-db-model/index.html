@@ -17,31 +17,32 @@
         <a-entity position="0 1.2 -2" scale="0.1 0.1 0.1"></a-entity>
     </a-scene>
     <script type="text/javascript">
+        asset_name = "dodo";
         var version = 1;
-        var dodo_asset = document.createElement("a-asset-item");
-        dodo_asset.id = "dodo";
+        var model_asset = document.createElement("a-asset-item");
+        model_asset.id = asset_name;
 
-        var model_url = "./gltf/dodo.gltf";
+        var model_url = "./gltf/" + asset_name + ".gltf";
         var is_db_updated = false;
 
         function insertDOMs() {
             var assets = document.querySelector('a-assets');
-            assets.appendChild(dodo_asset);
+            assets.appendChild(model_asset);
 
-            //var dodo_model = document.querySelector("a-entity");
-            var dodo_model = document.createElement("a-entity");
-            dodo_model.setAttribute('gltf-model', '#dodo');
-            dodo_model.setAttribute('position', '0 1.2 -2');
-            dodo_model.setAttribute('scale', '0.1 0.1 0.1');
-            document.querySelector("a-scene").appendChild(dodo_model);
+            var model_entity = document.createElement("a-entity");
+            model_entity.setAttribute('gltf-model', '#' + asset_name);
+            model_entity.setAttribute('position', '0 1.2 -2');
+            model_entity.setAttribute('scale', '0.1 0.1 0.1');
+            document.querySelector("a-scene").appendChild(model_entity);
         }
 
         window.onload = function () {
             //1.indexedDBを開く
-            var idbReq = indexedDB.open("3dmodel", version);
+            idbReq = indexedDB.open("3dmodel", version);
 
             //2.DBの新規作成時、またはバージョン変更時に実行するコード
             idbReq.onupgradeneeded = function (event) {
+                console.log("update db");
                 is_db_updated = true;
                 var db = event.target.result;
 
@@ -63,12 +64,12 @@
                             modelStore = transaction.objectStore("model");
                             var arraybuffer = e.target.response;
                             //データの追加
-                            modelStore.put({ name: "dodo", model: arraybuffer });
+                            modelStore.put({ name: asset_name, model: arraybuffer });
 
                             var blob = new Blob([arraybuffer], { type: 'application/octet-stream' });
                             var URL = window.URL || window.webkitURL;
                             var blob_url = URL.createObjectURL(blob)
-                            dodo_asset.setAttribute('src', blob_url);
+                            model_asset.setAttribute('src', blob_url);
                             console.log("complete model update");
                             insertDOMs();
                         } catch (e) {
@@ -81,13 +82,14 @@
 
             idbReq.onsuccess = function (event) {
                 if (!is_db_updated) {
+                    console.log("open database");
                     var db = event.target.result;
                     //"model"オブジェクトストアを読みreadonly権限付きで使用することを宣言
                     var transaction = db.transaction("model", "readonly");
                     //オブジェクトストアの取り出し
                     var modelStore = transaction.objectStore("model");
                     //オブジェクトストアへ取り出しリクエスト
-                    var getReq = modelStore.get("dodo");
+                    var getReq = modelStore.get(asset_name);
 
                     //modelオブジェクトストアからのデータの取り出し
                     getReq.onsuccess = function (event) {
@@ -97,8 +99,7 @@
                             var blob = new Blob([arraybuffer], { type: 'application/octet-stream' });
                             var URL = window.URL || window.webkitURL;
                             var blob_url = URL.createObjectURL(blob)
-                            dodo_asset.setAttribute('src', blob_url);
-                            console.log("opened database");
+                            model_asset.setAttribute('src', blob_url);
                         } catch (e) {
                             console.log(e.message);
                         }
