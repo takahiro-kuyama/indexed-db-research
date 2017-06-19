@@ -1,7 +1,7 @@
-#ŠT—v
+# ŠT—v
 ‚±‚ÌƒŠƒ|ƒWƒgƒŠ‚ÍA“®‰æƒtƒ@ƒCƒ‹‚Æ3Dƒ‚ƒfƒ‹‚ğindexedDB‚Å•Û‘¶‚µ‚Ä—˜—p‚·‚éƒR[ƒh‚ÌƒTƒ“ƒvƒ‹‚Å‚·B
 
-#à–¾
+# à–¾
 indexed-db-movie/index.html“à‚Å‚ÍA“®‰æƒtƒ@ƒCƒ‹‚ğƒlƒbƒg‚©‚çƒ_ƒEƒ“ƒ[ƒh‚µ‚ÄindexedDB‚É•Û‘¶‚µ‚ÄÄ¶‚µ‚Ü‚·B“ñ‰ñ–ÚˆÈ~‚Ì“Ç‚İ‚İ‚ÅAindexedDB‚Éƒf[ƒ^‚ª‚ ‚éê‡‚ÍindexedDB‚©‚ç“®‰æƒf[ƒ^‚ğƒ[ƒh‚µ‚ÄÄ¶‚µ‚Ü‚·B
 indexed-db-movie/deleteIndexedDB.html‚Å‚ÍAã‚Åì¬‚µ‚½ƒf[ƒ^ƒx[ƒX‚ğíœ‚µ‚Ü‚·B
 
@@ -10,7 +10,7 @@ indexed-db-model/deleteIndexedDB.html‚Å‚ÍAã‚Åì¬‚µ‚½ƒf[ƒ^ƒx[ƒX‚ğíœ‚µ‚Ü‚·
 ¡‰ñg—p‚µ‚½ƒ‚ƒfƒ‹‚É‚Â‚¢‚Ä
 3Dmodel by [Horniman Museum - Dodo Model](https://sketchfab.com/models/ad10226b4f7a451ea23920a556c72a90)
 
-#‚µ•û
+# ‚µ•û
 ‚±‚ÌƒŠƒ|ƒWƒgƒŠ‚ğƒNƒ[ƒ“‚µ‚½ŒãAƒRƒ}ƒ“ƒhƒvƒƒ“ƒvƒg‚©‚ç‚±‚ÌƒŠƒ|ƒWƒgƒŠ‚ÉˆÚ“®‚µ‚ÄAˆÈ‰º‚ÌƒRƒ}ƒ“ƒh‚ğ“ü—Í‚µ‚Änpm‚ğƒCƒ“ƒXƒg[ƒ‹‚µ‚Ä‚­‚¾‚³‚¢
 
 ```
