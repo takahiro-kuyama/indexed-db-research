@@ -3,9 +3,11 @@
 <head>
     <meta charset="UTF-8" />
     <title>Inline Movie with IndexedDB</title>
-    <meta name="Description" content="jsdo.it - share JavaScript, HTML5 and CSS - " />
+    <meta name="Description" content="Load movie by using IndexedDB" />
     <meta name="Keywords" content="JavaScript,HTML5,CSS" />
     <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1">
+    <meta http-equiv="Cache-Control" content="no-cache">
+    <meta http-equiv="Pragma" content="no-cache">
 
     <style type="text/css">
         body {
@@ -85,6 +87,10 @@
                                 var xhr = new XMLHttpRequest();
                                 xhr.open('GET', movie_url, true);
                                 xhr.responseType = 'arraybuffer';
+                                //IndexedDBを使用した場合との時間差を明確にするため、XMLHttpRequestのキャッシュを無効化（本来は必要なし）
+                                xhr.setRequestHeader('Pragma', 'no-cache');
+                                xhr.setRequestHeader('Cache-Control', 'no-cache');
+                                xhr.setRequestHeader('If-Modified-Since', 'Thu, 01 Jun 1970 00:00:00 GMT');
 
                                 xhr.onload = function (e) {
                                     db_status.innerText = "movie is loaded"
@@ -138,7 +144,7 @@
                         }
 
                         idbReq.onerror = function (event) {
-                            indexed_db_status.innerText = "failed db open"
+                            db_status.innerText = "failed db open"
                         }
 
                         is_video_loaded = true;
